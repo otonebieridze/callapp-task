@@ -10,15 +10,18 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // GET
-app.get("/api", (req, res) => {
+app.get("/api/users", (req, res) => {
   const data = fs.readFileSync("./data.json", "utf-8");
   res.send(JSON.parse(data));
 });
 // POST
-app.post("/api", (req, res) => {
+app.post("/api/users", (req, res) => {
   const data = fs.readFileSync("./data.json", "utf-8");
   const jsonData = JSON.parse(data);
   const newItem = req.body;
+
+  const newId = jsonData[jsonData.length - 1].id + 1;
+  newItem.id = newId;
 
   jsonData.push(newItem);
   fs.writeFileSync("./data.json", JSON.stringify(jsonData));
@@ -27,11 +30,11 @@ app.post("/api", (req, res) => {
   res.send(JSON.parse(updatedData));
 });
 // PUT
-app.put("/api/:id", (req, res) => {
+app.put("/api/users/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const data = fs.readFileSync("./data.json", "utf-8");
   const jsonData = JSON.parse(data);
-  const newItem = req.body;
+  const newItem = {...req.body, id: id};
   const index = jsonData.findIndex((item) => item.id === id);
 
   if (index !== -1) {
@@ -43,7 +46,7 @@ app.put("/api/:id", (req, res) => {
   }
 });
 // DELETE
-app.delete("/api/:id", (req, res) => {
+app.delete("/api/users/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const data = fs.readFileSync("./data.json", "utf-8");
   const jsonData = JSON.parse(data);

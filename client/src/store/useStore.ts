@@ -1,38 +1,27 @@
 import { create } from "zustand";
 import axios from "axios";
+import { DataItemInterface } from "../App";
 
-type Data = {
-  id: number;
-  name: string;
-  email: string;
-  gender: string;
-  address: {
-    street: string;
-    city: string;
-  };
-  phone: string;
-};
-
-type Store = {
+interface UseStoreInterface {
   loading: boolean;
-  data: Data[] | null;
+  storeData: DataItemInterface[] | null;
   error: string | null;
   fetchData: () => Promise<void>;
 };
 
-const useStore = create<Store>((set) => ({
+const useStore = create<UseStoreInterface>((set) => ({
   loading: true,
-  data: null,
+  storeData: null,
   error: null,
 
   fetchData: async () => {
     try {
-      const response = await axios.get<Data[]>(
-        "http://localhost:5000/api"
+      const response = await axios.get<DataItemInterface[]>(
+        "http://localhost:5000/api/users"
       );
-      set({ data: response.data, loading: false, error: null });
+      set({ storeData: response.data, loading: false, error: null });
     } catch (error: any) {
-      set({ error: error.message, loading: false, data: null });
+      set({ error: error.message, loading: false, storeData: null });
     }
   },
 }));

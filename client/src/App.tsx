@@ -1,76 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import PieChart from "./pages/PieChart";
+import Header from "./components/Header";
 import useStore from "./store/useStore";
-import { Table } from "antd";
-import { Button } from "antd";
+import "./App.css";
+
+export interface DataItemInterface {
+  id: number;
+  name: string;
+  email: string;
+  gender: string;
+  address: {
+    street: string;
+    city: string;
+  };
+  phone: string;
+};
 
 const App = () => {
-  const { loading, data, error, fetchData } = useStore();
+  const { storeData } = useStore();
+  const [myData, setMyData] = useState<DataItemInterface[]>(storeData!);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id"
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name"
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email"
-    },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      key: "gender"
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      render: (address: { street: string, city: string }) => (
-        <>
-          <p>street: {address.street}</p>
-          <p>city: {address.city}</p>
-        </>
-      )
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone"
-    },
-
-    {
-      title: "Actions",
-      render: () => {
-        return (
-          <>
-            <Button type="link">Add</Button>
-            <Button type="link">Delete</Button>
-          </>
-        )
-      }
-    }
-  ];
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+    setMyData(storeData!)
+  }, [storeData])
 
   return (
     <>
-      <Table columns={columns} dataSource={data!} />
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home myData={myData} setMyData={setMyData} />} />
+        <Route path="/pie-chart" element={<PieChart />} />
+      </Routes>
     </>
   );
 };
