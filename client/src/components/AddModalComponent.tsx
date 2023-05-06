@@ -4,6 +4,8 @@ import { Button, Form, Input, Modal, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { DataItemInterface } from "../App";
 import styled from "styled-components";
+import InputMask, { InputMaskProps } from "react-input-mask";
+import { useRef } from "react";
 
 type AddModalComponentProps = {
   myData: DataItemInterface[];
@@ -13,6 +15,8 @@ type AddModalComponentProps = {
 const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
   const [open, setOpen] = useState(false);
   const [form] = useForm();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const showModal = () => {
     setOpen(true);
@@ -56,7 +60,7 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter your name" />
           </Form.Item>
 
           <Form.Item
@@ -73,7 +77,7 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter your email" />
           </Form.Item>
 
           <Form.Item
@@ -87,6 +91,7 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
             ]}
           >
             <Select
+              placeholder="Enter your gender"
               options={[
                 { label: "Male", value: "male" },
                 { label: "Female", value: "female" },
@@ -119,7 +124,7 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
                 },
               ]}
             >
-              <Input placeholder="Enter your city" />
+              <Input placeholder="City" />
             </Form.Item>
           </Form.Item>
 
@@ -129,11 +134,23 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
             rules={[
               {
                 required: true,
-                message: "Please enter your phone",
+                message: "Please enter your phone number",
+              },
+              {
+                pattern: /^\+1 \(\d{3}\) \d{3}-\d{4}$/,
+                message: "Please enter valid phone number",
               },
             ]}
           >
-            <Input />
+            <InputMask
+              mask="+1 (999) 999-9999"
+              maskChar={null}
+              placeholder="+1 (999) 999-9999"
+            >
+              {({ ...rest }: InputMaskProps) => (
+                <Input {...rest} ref={inputRef} />
+              )}
+            </InputMask>
           </Form.Item>
 
           <Form.Item>
@@ -149,9 +166,8 @@ const AddModalComponent = ({ myData, setMyData }: AddModalComponentProps) => {
 
 export default AddModalComponent;
 
-
 const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-`
+`;

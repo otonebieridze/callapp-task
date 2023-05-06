@@ -3,6 +3,8 @@ import axios from "axios";
 import { Button, Form, Input, Modal, Select } from "antd";
 import { DataItemInterface } from "../App";
 import { useForm } from "antd/es/form/Form";
+import InputMask, { InputMaskProps } from "react-input-mask";
+import { useRef } from "react";
 
 type EditModalComponentProps = {
   myData: DataItemInterface[];
@@ -19,10 +21,11 @@ const EditModalComponent = ({
   currentItem,
 }: EditModalComponentProps) => {
   const [form] = useForm();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    form.setFieldsValue(currentItem)
-  }, [currentItem])
+    form.setFieldsValue(currentItem);
+  }, [currentItem]);
 
   const handleSubmit = (values: DataItemInterface) => {
     try {
@@ -64,7 +67,7 @@ const EditModalComponent = ({
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter your name" />
           </Form.Item>
 
           <Form.Item
@@ -81,7 +84,7 @@ const EditModalComponent = ({
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter your email" />
           </Form.Item>
 
           <Form.Item
@@ -95,6 +98,7 @@ const EditModalComponent = ({
             ]}
           >
             <Select
+              placeholder="Enter your gender"
               options={[
                 { label: "Male", value: "male" },
                 { label: "Female", value: "female" },
@@ -127,7 +131,7 @@ const EditModalComponent = ({
                 },
               ]}
             >
-              <Input placeholder="Enter your city" />
+              <Input placeholder="City" />
             </Form.Item>
           </Form.Item>
 
@@ -139,9 +143,21 @@ const EditModalComponent = ({
                 required: true,
                 message: "Please enter your phone",
               },
+              {
+                pattern: /^\+1 \(\d{3}\) \d{3}-\d{4}$/,
+                message: "Please enter valid phone number",
+              },
             ]}
           >
-            <Input />
+            <InputMask
+              mask="+1 (999) 999-9999"
+              maskChar={null}
+              placeholder="+1 (999) 999-9999"
+            >
+              {({ ...rest }: InputMaskProps) => (
+                <Input {...rest} ref={inputRef} />
+              )}
+            </InputMask>
           </Form.Item>
 
           <Form.Item>
